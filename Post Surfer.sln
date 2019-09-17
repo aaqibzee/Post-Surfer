@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{2A61562A-7B0C-470A-B02E-AE8953B66F80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Post Surfer", "WebApplication1\Post Surfer.csproj", "{2A61562A-7B0C-470A-B02E-AE8953B66F80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

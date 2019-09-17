@@ -1,17 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
-using System;
-using WebApplication1.Data;
-using WebApplication1.Installers;
+using Post_Surfer.Installers;
 
-namespace WebApplication1
+namespace Post_Surfer
 {
     public class Startup
     {
@@ -44,7 +37,6 @@ namespace WebApplication1
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
             app.UseAuthentication();
             
             app.UseMvc(routes =>

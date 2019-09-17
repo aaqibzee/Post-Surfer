@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApplication1.Contract
+namespace Post_Surfer.Contract
 {
     public class APIRoutes
     {

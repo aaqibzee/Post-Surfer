@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApplication1.Data
+namespace Post_Surfer.Data
 {
     public class DataContext : IdentityDbContext
     {

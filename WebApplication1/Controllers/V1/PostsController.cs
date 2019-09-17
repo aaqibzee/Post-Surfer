@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication1.Domain;
+using Post_Surfer.Domain;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace WebApplication1.Controllers.V1
+namespace Post_Surfer.Controllers.V1
 {
     [ApiVersion("1.0")]
     public class PostsController : Controller
