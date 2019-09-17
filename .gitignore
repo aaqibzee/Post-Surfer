@@ -1,0 +1,88 @@
+## Inspired by https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+
+# Cache/options directory
+.vs/
+
+# .NET Core
+project.lock.json
+
+# Files built by Visual Studio
+*.vspscc
+*.vssscc
+*.scc
+
+# Visual C++ cache files
+*.aps
+
+# Click-Once directory
+publish/
+
+# Publish Web Output
+*.pubxml
+
+# NuGet Packages
+*.nupkg
+# Specially named NuGet folder
+[Nn]u[Gg]et/
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
+# NuGet v3's project.json files produces more ignorable files
+*.nuget.props
+*.nuget.targets
+
+# Visual Studio cache files
+# files ending in .cache can be ignored
+*.[Cc]ache
+# but keep track of directories ending in .cache
+!*.[Cc]ache/
+
+# Others
+ClientBin/
+*.dbmdl
+*.jfm
+
+# Backup & report files from converting an old project file
+# to a newer Visual Studio version. Backup files are not needed,
+# because we have git ;-)
+UpgradeLog*.htm
+
+# Business Intelligence projects
+*.rdl.data
+*.rptproj.rsuser
+
+# Visual Studio LightSwitch build output
+**/*.HTMLClient/GeneratedArtifacts
+**/*.DesktopClient/GeneratedArtifacts
+**/*.DesktopClient/ModelManifest.xml
+**/*.Server/GeneratedArtifacts
+**/*.Server/ModelManifest.xml
+_Pvt_Extensions
+
+# Cake - Uncomment if you are using it
+tools/**
+!tools/packages.config
+
+# Customizations
+PrecompiledWeb/
+Publish/
+*.eto
+.ssms_suo
+*.sqlite
+FileLog/
+*.orig
+
+# No more Enterprise SQL scripts!
+data/Enterprise/
