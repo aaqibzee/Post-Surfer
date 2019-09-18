@@ -38,7 +38,6 @@ namespace Post_Surfer
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
-            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -52,7 +51,10 @@ namespace Post_Surfer
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Core API");
             }
             );
-
+            // To redirect to swagger on application start
+            app.Run(async context => {
+                context.Response.Redirect("/swagger");
+            });
         }
     }
 }

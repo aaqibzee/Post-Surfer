@@ -7,6 +7,14 @@ namespace Post_Surfer.Contract
 {
     public class APIRoutes
     {
-        public const string GetAll = "api/v1/posts";
+        public const string Root = "api";
+        public const string Version = "v1";
+        public const string Base = Root+"/"+Version;
+        public class Posts
+        {
+            public const string Create = Base+"/posts";
+            public const string GetAll = Base + "/posts";
+            public const string Get = Base + "/posts/{postId}";
+        }
     }
 }

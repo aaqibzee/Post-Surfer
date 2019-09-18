@@ -15,7 +15,7 @@ namespace Post_Surfer.Installers
             services.AddApiVersioning(o => o.ApiVersionReader = new HeaderApiVersionReader("api-version"));
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("v1", new Info { Version = "v1", Title = "ASP.Net Core Web API" });
+                x.SwaggerDoc("v1", new Info { Version = "v1", Title = "Post Surfer" });
             });
             services.AddApiVersioning(o =>
             {
