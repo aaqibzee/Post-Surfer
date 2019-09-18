@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Post_Surfer.Services
 {
-    interface IPostService
+   public interface IPostService
     {
         List<Post> GetAll();
         Post GetPostById(Guid Id);
         void AddPost(Post post);
+        bool UpdatePost(Post post);
     }
 }

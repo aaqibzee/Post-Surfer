@@ -16,8 +16,8 @@ namespace Post_Surfer.Controllers.V1
 
     public class PostsController : Controller
     {
-        private IPostService _postService;
-        public PostsController( PostService postsrvice)
+        private readonly IPostService _postService;
+        public PostsController(IPostService postsrvice)
         {
             _postService = postsrvice;
         }
@@ -47,7 +47,24 @@ namespace Post_Surfer.Controllers.V1
             if (postId != Guid.Empty)
             {
                 var post = _postService.GetPostById(postId);
-                if (post!=null)
+                if (post != null)
+                    return Ok(post);
+                else
+                    return NotFound();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPut(APIRoutes.Posts.Update)]
+        public IActionResult Update([FromBody] CreatePostRequest postRequest)
+        {
+            if (postRequest.Id != Guid.Empty)
+            {
+                var post = new Post { Id = postRequest.Id, Name = postRequest.Name };
+                var status = _postService.UpdatePost(post);
+                if (status)
                     return Ok(post);
                 else
                     return NotFound();

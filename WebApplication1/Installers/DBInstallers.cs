@@ -17,7 +17,6 @@ namespace Post_Surfer.Installers
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<DataContext>();
             services.AddSingleton<IPostService, PostService>();
-            
         }
     }
 }

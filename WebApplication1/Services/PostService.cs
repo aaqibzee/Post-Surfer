@@ -28,7 +28,16 @@ namespace Post_Surfer.Services
         }
         public void AddPost(Post post)
         {
-             _posts.Add(post);
+            _posts.Add(post);
+        }
+        public bool UpdatePost(Post post) 
+        {
+            var _post = GetPostById(post.Id);
+            if (_post==null)
+                return false;
+            var index = _posts.FindIndex(x => x.Id == post.Id);
+            _posts[index] = post;
+            return true;
         }
     }
 }

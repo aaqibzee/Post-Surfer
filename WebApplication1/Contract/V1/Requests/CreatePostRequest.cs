@@ -8,5 +8,6 @@ namespace Post_Surfer.Contract
     public class CreatePostRequest
     {
         public Guid Id { get; set; }
+        public String Name { get; set; }
     }
 }
