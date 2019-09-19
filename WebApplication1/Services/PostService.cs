@@ -1,4 +1,6 @@
-﻿using Post_Surfer.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using Post_Surfer.Data;
+using Post_Surfer.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,36 +10,43 @@ namespace Post_Surfer.Services
 {
     public class PostService : IPostService
     {
-        private readonly List<Post> _posts;
-        public PostService()
-        {
-            _posts = new List<Post>();
-            for (var i = 0; i < 5; i++)
-            {
-                _posts.Add(new Post { Id = Guid.NewGuid(), Name = $"Post { i}" });
-            }
-        }
-        public  List<Post> GetAll()
-        {
-            return _posts;
 
-        }
-        public  Post GetPostById(Guid Id)
+        private readonly DataContext _datacontext;
+        public PostService(DataContext datacontext )
         {
-            return _posts.FirstOrDefault(x => x.Id == Id);
+            _datacontext = datacontext;
         }
-        public void AddPost(Post post)
+
+        public async Task <List<Post>> GetAllAsync()
         {
-            _posts.Add(post);
+            return await _datacontext.Posts.ToListAsync();
         }
-        public bool UpdatePost(Post post) 
+        public async Task<Post> GetPostByIdAsync(Guid Id)
         {
-            var _post = GetPostById(post.Id);
-            if (_post==null)
+            return await _datacontext.Posts.FirstOrDefaultAsync(x => x.Id == Id);
+        }
+        public async Task<bool> CreatePostAsync(Post post)
+        {
+            _datacontext.Posts.AddAsync(post);
+            var created = await _datacontext.SaveChangesAsync();
+            return created > 0;
+        }
+
+        public async Task<bool> DeletePostAsync(Guid Id)
+        {
+            var _post = await GetPostById(Id);
+            if (_post == null)
                 return false;
-            var index = _posts.FindIndex(x => x.Id == post.Id);
-            _posts[index] = post;
+            var deleted =_datacontext.Posts.Remove(_post);
+            await _datacontext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> UpdatePostAsync(Post post) 
+        {
+            _datacontext.Posts.Update(post);
+            var upgradedCount = await _datacontext.SaveChangesAsync();
+            return upgradedCount > 0;
         }
     }
 }

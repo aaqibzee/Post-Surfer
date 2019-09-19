@@ -8,9 +8,10 @@ namespace Post_Surfer.Services
 {
    public interface IPostService
     {
-        List<Post> GetAll();
-        Post GetPostById(Guid Id);
-        void AddPost(Post post);
-        bool UpdatePost(Post post);
+        Task<bool> CreatePostAsync(Post post);
+        Task<bool> DeletePostAsync(Guid Id);
+        Task<List<Post>> GetAllAsync();
+        Task<Post> GetPostByIdAsync(Guid Id); 
+        Task<bool> UpdatePostAsync(Post post);
     }
 }
