@@ -11,12 +11,12 @@ namespace Post_Surfer.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<DataContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<DataContext>();
-            services.AddSingleton<IPostService, PostService>();
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddScoped<IPostService, PostService>();
         }
     }
 }

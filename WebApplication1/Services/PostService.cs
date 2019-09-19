@@ -11,8 +11,8 @@ namespace Post_Surfer.Services
     public class PostService : IPostService
     {
 
-        private readonly DataContext _datacontext;
-        public PostService(DataContext datacontext )
+        private readonly ApplicationDbContext _datacontext;
+        public PostService(ApplicationDbContext datacontext )
         {
             _datacontext = datacontext;
         }
@@ -23,7 +23,7 @@ namespace Post_Surfer.Services
         }
         public async Task<Post> GetPostByIdAsync(Guid Id)
         {
-            return await _datacontext.Posts.FirstOrDefaultAsync(x => x.Id == Id);
+            return await (_datacontext.Posts.FirstOrDefaultAsync(x => x.Id == Id));
         }
         public async Task<bool> CreatePostAsync(Post post)
         {
@@ -34,7 +34,7 @@ namespace Post_Surfer.Services
 
         public async Task<bool> DeletePostAsync(Guid Id)
         {
-            var _post = await GetPostById(Id);
+            var _post = await GetPostByIdAsync(Id);
             if (_post == null)
                 return false;
             var deleted =_datacontext.Posts.Remove(_post);

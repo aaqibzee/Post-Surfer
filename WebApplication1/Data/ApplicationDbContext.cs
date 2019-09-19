@@ -7,9 +7,9 @@ using Post_Surfer.Domain;
 
 namespace Post_Surfer.Data
 {
-    public class DataContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
-        public DataContext(DbContextOptions<DataContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }

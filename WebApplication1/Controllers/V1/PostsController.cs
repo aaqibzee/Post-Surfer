@@ -27,7 +27,7 @@ namespace Post_Surfer.Controllers.V1
             var post = new Post { Name = postRequest.Name,Id= Guid.NewGuid() };
             await _postService.CreatePostAsync(post);
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            //var locationUrl = baseUrl + "/" + APIRoutes.Posts.Create.Replace("postId", post.Id.ToString);
+            //var locationUrl = baseUrl + "/" + APIRoutes.Posts.Create.Replace("postId", post.Id);
             var response = new PostsResponse { Id = post.Id };
             return Created(baseUrl, response);
         }
@@ -60,7 +60,7 @@ namespace Post_Surfer.Controllers.V1
                 return BadRequest();
             }
 
-            var post = _postService.GetPostByIdAsync(postId);
+            var post =await _postService.GetPostByIdAsync(postId);
 
             if (post != null)
             {
@@ -75,7 +75,7 @@ namespace Post_Surfer.Controllers.V1
         [HttpGet(APIRoutes.Posts.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(_postService.GetAllAsync());
+            return Ok(await _postService.GetAllAsync());
         }
 
         [HttpPut(APIRoutes.Posts.Update)]
