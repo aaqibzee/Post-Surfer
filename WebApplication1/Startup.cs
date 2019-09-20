@@ -55,6 +55,7 @@ namespace Post_Surfer
             app.Run(async context =>
             {
                 context.Response.Redirect("/swagger");
+
             });
         }
     }
