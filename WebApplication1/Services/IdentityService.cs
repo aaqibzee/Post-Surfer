@@ -66,7 +66,7 @@ namespace Post_Surfer.Services
             return await GenerateAuthenticationResultForUser(newUser);
         }
 
-        private async Task<AuthenticationResult> GenerateAuthenticationResultForUser(IdentityUser newUser)
+        private async Task<AuthenticationResult> GenerateAuthenticationResultForUser(IdentityUser User)
         {
           
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -75,12 +75,12 @@ namespace Post_Surfer.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, newUser.Email),
+                    new Claim(JwtRegisteredClaimNames.Sub, User.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email,newUser.Email),
-                    new Claim("id",newUser.Id)
+                    new Claim(JwtRegisteredClaimNames.Email,User.Email),
+                    new Claim("id",User.Id)
                 }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifetime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

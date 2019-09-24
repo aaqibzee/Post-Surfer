@@ -21,6 +21,7 @@ namespace Post_Surfer.Installers
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddApiVersioning(o => o.ApiVersionReader = new HeaderApiVersionReader("api-version"));
 
+            #region Authentication   
 
             JwtSettings jwtSettings = new JwtSettings();
             configuration.Bind(nameof(JwtSettings), jwtSettings);
@@ -61,6 +62,8 @@ namespace Post_Surfer.Installers
             });
             x.AddSecurityRequirement(security);
             });
+
+            #endregion
 
             services.AddApiVersioning(o =>
             {

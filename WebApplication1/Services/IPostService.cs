@@ -13,5 +13,6 @@ namespace Post_Surfer.Services
         Task<List<Post>> GetAllAsync();
         Task<Post> GetPostByIdAsync(Guid Id); 
         Task<bool> UpdatePostAsync(Post post);
+        Task<bool> UserOwnsPostAsync(Guid id, string getUserId);
     }
 }

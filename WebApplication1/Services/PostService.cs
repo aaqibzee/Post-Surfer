@@ -12,12 +12,12 @@ namespace Post_Surfer.Services
     {
 
         private readonly ApplicationDbContext _datacontext;
-        public PostService(ApplicationDbContext datacontext )
+        public PostService(ApplicationDbContext datacontext)
         {
             _datacontext = datacontext;
         }
 
-        public async Task <List<Post>> GetAllAsync()
+        public async Task<List<Post>> GetAllAsync()
         {
             return await _datacontext.Posts.ToListAsync();
         }
@@ -36,17 +36,34 @@ namespace Post_Surfer.Services
         {
             var _post = await GetPostByIdAsync(Id);
             if (_post == null)
+            { 
                 return false;
-            var deleted =_datacontext.Posts.Remove(_post);
+            }
+            var deleted = _datacontext.Posts.Remove(_post);
             await _datacontext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> UpdatePostAsync(Post post) 
+        public async Task<bool> UpdatePostAsync(Post post)
         {
             _datacontext.Posts.Update(post);
             var upgradedCount = await _datacontext.SaveChangesAsync();
             return upgradedCount > 0;
+        }
+
+        public async Task<bool> UserOwnsPostAsync(Guid postId, string UserId)
+        {
+            var post = await _datacontext.Posts.AsNoTracking().SingleOrDefaultAsync(x => x.Id == postId);
+            if (post==null)
+            {
+                return false;
+            }
+
+            if(post.UserId!=UserId)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Post_Surfer.Installers
                     configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddScoped<IPostService, PostService>();
 
         }
