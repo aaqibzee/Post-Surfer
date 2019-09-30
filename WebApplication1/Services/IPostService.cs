@@ -14,5 +14,6 @@ namespace Post_Surfer.Services
         Task<Post> GetPostByIdAsync(Guid Id); 
         Task<bool> UpdatePostAsync(Post post);
         Task<bool> UserOwnsPostAsync(Guid id, string getUserId);
+        Task<IEnumerable<Tag>> GetAllTagsAsync();
     }
 }

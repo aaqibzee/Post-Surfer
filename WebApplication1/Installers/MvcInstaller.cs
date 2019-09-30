@@ -56,7 +56,11 @@ namespace Post_Surfer.Installers
             });
 
             #endregion
-
+            services.AddAuthorization(options=>
+            {
+                options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
+            }
+            );
             #region Swagger
 
             services.AddSwaggerGen(x =>

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Post_Surfer.Extensions;
+using System.Linq;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,14 +28,19 @@ namespace Post_Surfer.Controllers.V1
         [HttpPost(APIRoutes.Posts.Create)]
         public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
         {
+            var newPostId = Guid.NewGuid();
             var post = new Post
             {
-                Name = postRequest.Name, Id = Guid.NewGuid(),
-                UserId = HttpContext.GetUserId()
+                Name = postRequest.Name,
+                Id = newPostId,
+                UserId = HttpContext.GetUserId(),
+                Tags = postRequest.Tags.Select(x => new PostTag { PostId = newPostId, TagName = x }).ToList()
             };
             await _postService.CreatePostAsync(post);
+
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            //var locationUrl = baseUrl + "/" + APIRoutes.Posts.Create.Replace("postId", post.Id);
+            var locationUri = baseUrl + "/" + APIRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
+
             var response = new PostsResponse { Id = post.Id };
             return Created(baseUrl, response);
         }

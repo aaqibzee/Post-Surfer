@@ -56,8 +56,10 @@ namespace Post_Surfer.Services
                     Errors = new[] { "User with this email adddress already exists" }
                 };
             }
+            var newUserId = Guid.NewGuid();
             var newUser = new IdentityUser
             {
+                Id= newUserId.ToString(),
                 Email = email,
                 UserName = email
             };
@@ -69,6 +71,8 @@ namespace Post_Surfer.Services
                     Errors = createdUser.Errors.Select(x => x.Description)
                 };
             }
+            _userManager.AddClaimAsync(newUser, new Claim("tags.view", "true"));
+
             return await GenerateAuthenticationResultForUser(newUser);
         }
 
@@ -143,20 +147,25 @@ namespace Post_Surfer.Services
                     jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
                     StringComparison.InvariantCultureIgnoreCase);
         }
-        private async Task<AuthenticationResult> GenerateAuthenticationResultForUser(IdentityUser User)
+        private async Task<AuthenticationResult> GenerateAuthenticationResultForUser(IdentityUser user)
         {
           
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+            var claims = new List<Claim>
+            {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Email,user.Email),
+                    new Claim("id",user.Id)
+            };
+            var userClaims = await _userManager.GetClaimsAsync(user);
+
+            claims.AddRange(userClaims);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, User.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email,User.Email),
-                    new Claim("id",User.Id)
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifetime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -166,7 +175,7 @@ namespace Post_Surfer.Services
             var refreshToken = new RefreshToken
             {
                 JwtId = token.Id,
-                UserId = User.Id,
+                UserId = user.Id,
                 CreationDate = DateTime.UtcNow,
                 ExpiryDate = DateTime.UtcNow.AddMonths(6)
             };
