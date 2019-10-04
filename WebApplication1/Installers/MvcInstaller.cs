@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Post_Surfer.Authorization;
 using Post_Surfer.Options;
 using Post_Surfer.Services;
 using Swashbuckle.AspNetCore.Swagger;
@@ -56,11 +58,15 @@ namespace Post_Surfer.Installers
             });
 
             #endregion
-            services.AddAuthorization(options=>
+            services.AddAuthorization(options =>
             {
-                options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
-            }
-            );
+                options.AddPolicy("MustWorkForChapsas", policy =>
+                {
+                    policy.AddRequirements(new WorksForCompanyRequirement("chapsas.com"));
+                });
+            });
+
+            services.AddSingleton<IAuthorizationHandler, WorksForCompanyHandler>();
             #region Swagger
 
             services.AddSwaggerGen(x =>
@@ -79,7 +85,6 @@ namespace Post_Surfer.Installers
                     Type = "apiKey"
                 }
                 );
-        
                 x.AddSecurityRequirement(security);
 
             });

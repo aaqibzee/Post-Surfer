@@ -9,19 +9,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Post_Surfer.Extensions;
 using System.Linq;
+using Post_Surfer.Contract.V1.Response;
+using AutoMapper;
+using System.Collections.Generic;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Post_Surfer.Controllers.V1
 {
     //[ApiVersion("1.0")]
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PostsController : Controller
     {
         private readonly IPostService _postService;
-        public PostsController(IPostService postsrvice)
+        private readonly IMapper _mapper;
+        public PostsController(IPostService postsrvice, IMapper mapper)
         {
             _postService = postsrvice;
+            _mapper = mapper;   
         }
 
 
@@ -39,10 +44,8 @@ namespace Post_Surfer.Controllers.V1
             await _postService.CreatePostAsync(post);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + APIRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
-
-            var response = new PostsResponse { Id = post.Id };
-            return Created(baseUrl, response);
+            var locationUri = baseUrl + "/" + APIRoutes.Posts.Get.Replace("{postId}", post.Id.ToString()); 
+            return Created(baseUrl, _mapper.Map<PostsResponse>(post));
         }
 
         [HttpDelete(APIRoutes.Posts.Delete)]
@@ -77,11 +80,11 @@ namespace Post_Surfer.Controllers.V1
                 return BadRequest();
             }
 
-            var post =await _postService.GetPostByIdAsync(postId);
+            var post = await _postService.GetPostByIdAsync(postId);
 
             if (post != null)
             {
-                return Ok(post);
+                return Ok(_mapper.Map<PostsResponse>(post));
             }
             else
             {
@@ -92,7 +95,8 @@ namespace Post_Surfer.Controllers.V1
         [HttpGet(APIRoutes.Posts.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _postService.GetAllAsync());
+            var post = await _postService.GetAllAsync();
+            return Ok(_mapper.Map<List<PostsResponse>>(post));
         }
 
         [HttpPut(APIRoutes.Posts.Update)]
@@ -114,7 +118,7 @@ namespace Post_Surfer.Controllers.V1
             var status = await _postService.UpdatePostAsync(post);
             if (status)
             {
-                return Ok(post);
+                return Ok(_mapper.Map<PostsResponse>(post));
             }
             else
             {

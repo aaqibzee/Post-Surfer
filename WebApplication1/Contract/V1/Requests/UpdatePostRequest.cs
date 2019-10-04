@@ -1,5 +1,4 @@
 ﻿using System;
-
 namespace Post_Surfer.Contract
 {
     public class UpdatePostRequest

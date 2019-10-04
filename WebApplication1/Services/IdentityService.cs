@@ -71,7 +71,15 @@ namespace Post_Surfer.Services
                     Errors = createdUser.Errors.Select(x => x.Description)
                 };
             }
-            _userManager.AddClaimAsync(newUser, new Claim("tags.view", "true"));
+            await _userManager.AddClaimAsync(newUser, new Claim("tags.view", "true"));
+
+            //IdentityUser _user = await _userManager.FindByEmailAsync("Admin@gmail.com");
+            //var _User = new IdentityUser();
+            //await _userManager.AddToRoleAsync(_user, "Admin");
+
+            //_user = await _userManager.FindByEmailAsync("Poster@gmail.com");
+            //_User = new IdentityUser();
+            //await _userManager.AddToRoleAsync(_user, "Poster");
 
             return await GenerateAuthenticationResultForUser(newUser);
         }
@@ -149,7 +157,7 @@ namespace Post_Surfer.Services
         }
         private async Task<AuthenticationResult> GenerateAuthenticationResultForUser(IdentityUser user)
         {
-          
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             var claims = new List<Claim>
@@ -163,8 +171,12 @@ namespace Post_Surfer.Services
 
             claims.AddRange(userClaims);
 
+            var roles = await _userManager.GetRolesAsync(user);
+            claims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifetime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -190,7 +202,5 @@ namespace Post_Surfer.Services
                 RefreshToken=refreshToken.Token
             };
         }
-
-       
     }
 }
