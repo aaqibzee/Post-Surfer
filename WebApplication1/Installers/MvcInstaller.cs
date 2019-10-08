@@ -12,15 +12,23 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using FluentValidation.AspNetCore;
+using Post_Surfer.Filters;
 
 namespace Post_Surfer.Installers
 {
-    public class MvcInstaller: Installer
+    public class MvcInstaller : IInstaller
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-           
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+                    {
+                        options.EnableEndpointRouting = false;
+                        options.Filters.Add<ValidationFilter>();
+                    })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddFluentValidation(mvcConfiguration =>
+                    mvcConfiguration.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddApiVersioning(o => o.ApiVersionReader = new HeaderApiVersionReader("api-version"));
 
@@ -33,7 +41,7 @@ namespace Post_Surfer.Installers
 
             services.AddScoped<IIdentityService, IdentityService>();
 
-            var tokenValidationParametres= new TokenValidationParameters
+            var tokenValidationParametres = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key: Encoding.ASCII.GetBytes(jwtSettings.Secret)),
@@ -46,51 +54,46 @@ namespace Post_Surfer.Installers
             services.AddSingleton(tokenValidationParametres);
 
             services.AddAuthentication(configureOptions: x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; 
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.SaveToken = true;
-                x.TokenValidationParameters = tokenValidationParametres;
-            });
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = tokenValidationParametres;
+                });
 
             #endregion
+
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("MustWorkForChapsas", policy =>
-                {
-                    policy.AddRequirements(new WorksForCompanyRequirement("chapsas.com"));
-                });
+                options.AddPolicy("MustWorkForChapsas",
+                    policy => { policy.AddRequirements(new WorksForCompanyRequirement("chapsas.com")); });
             });
 
             services.AddSingleton<IAuthorizationHandler, WorksForCompanyHandler>();
+
             #region Swagger
 
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("v1", new Info { Version = "v1", Title = "Post Surfer" });
-                var security = new Dictionary<string, IEnumerable<String>>
-                {
-                    { "Bearer", new string[0]}
-                };
+                x.SwaggerDoc("v1", new Info {Version = "v1", Title = "Post Surfer"});
+                var security = new Dictionary<string, IEnumerable<String>> {{"Bearer", new string[0]}};
 
-                x.AddSecurityDefinition(name: "Bearer", new ApiKeyScheme
-                {
-                    Description = "JWT Authorization header using the bearer scheme",
-                    Name = "Authorization",
-                    In = "Header",
-                    Type = "apiKey"
-                }
-                );
+                x.AddSecurityDefinition(name: "Bearer",
+                    new ApiKeyScheme
+                    {
+                        Description = "JWT Authorization header using the bearer scheme",
+                        Name = "Authorization",
+                        In = "Header",
+                        Type = "apiKey"
+                    });
                 x.AddSecurityRequirement(security);
-
             });
-            
-            #endregion
 
+            #endregion
 
             services.AddApiVersioning(o =>
             {

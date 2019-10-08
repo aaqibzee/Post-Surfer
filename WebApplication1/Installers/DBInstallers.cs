@@ -7,7 +7,7 @@ using Post_Surfer.Services;
 
 namespace Post_Surfer.Installers
 {
-    public class DBInstallers : Installer
+    public class DBInstallers : IInstaller
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {

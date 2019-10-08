@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Post_Surfer
 {
-    public interface Installer
+    public interface IInstaller
     {
         void InstallServices(IServiceCollection serviceCollection ,IConfiguration configuration);
     }

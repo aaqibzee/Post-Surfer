@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace Post_Surfer.MappingProfiles
 {
-    public class DomainToResponseProfile: Profile
+    public class DomainToResponseProfile : Profile
     {
         public DomainToResponseProfile()
         {
-            CreateMap<Post, PostsResponse>().ForMember(dest=>dest.Tags,opt=>opt.MapFrom(src=>src.Tags.Select(x=>new TagResponse { Name=x.TagName})));
+            CreateMap<Post, PostsResponse>().ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags.Select(x => new TagResponse { Name = x.TagName })));
             CreateMap<Tag, TagResponse>();
 
         }

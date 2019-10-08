@@ -26,7 +26,7 @@ namespace Post_Surfer.Controllers.V1
             _postService = postService;
             _mapper = mapper;
         }
-        
+
         [HttpGet(APIRoutes.Tags.GetAll)]
         //[Authorize(Policy = "MustWorkForChapsas")]
         public async Task<IActionResult> GetAll()
@@ -34,7 +34,7 @@ namespace Post_Surfer.Controllers.V1
             var tags = await _postService.GetAllTagsAsync();
             return Ok(_mapper.Map<List<TagResponse>>(tags));
         }
-        
+
         [HttpGet(APIRoutes.Tags.Get)]
         public async Task<IActionResult> Get([FromRoute]string tagName)
         {
@@ -50,6 +50,7 @@ namespace Post_Surfer.Controllers.V1
         [HttpPost(APIRoutes.Tags.Create)]
         public async Task<IActionResult> Create([FromBody] CreateTagRequest request)
         {
+
             var newTag = new Tag
             {
                 Name = request.TagName,
@@ -60,14 +61,14 @@ namespace Post_Surfer.Controllers.V1
             var created = await _postService.CreateTagAsync(newTag);
             if (!created)
             {
-                return BadRequest(new {error = "Unable to create tag"});
+                return BadRequest(new { error = "Unable to create tag" });
             }
-                
+
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + APIRoutes.Tags.Get.Replace("{tagName}", newTag.Name);
             return Created(locationUri, _mapper.Map<TagResponse>(newTag));
         }
-        
+
         [HttpDelete(APIRoutes.Tags.Delete)]
         [Authorize(Policy = "MustWorkForChapsas")]
         public async Task<IActionResult> Delete([FromRoute] string tagName)

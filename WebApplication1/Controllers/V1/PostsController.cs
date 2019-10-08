@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Post_Surfer.Extensions;
 using System.Linq;
-using Post_Surfer.Contract.V1.Response;
 using AutoMapper;
 using System.Collections.Generic;
 
@@ -23,10 +22,12 @@ namespace Post_Surfer.Controllers.V1
     {
         private readonly IPostService _postService;
         private readonly IMapper _mapper;
-        public PostsController(IPostService postsrvice, IMapper mapper)
+
+        public PostsController(IPostService postService,
+            IMapper mapper)
         {
-            _postService = postsrvice;
-            _mapper = mapper;   
+            _postService = postService;
+            _mapper = mapper;
         }
 
 
@@ -39,13 +40,22 @@ namespace Post_Surfer.Controllers.V1
                 Name = postRequest.Name,
                 Id = newPostId,
                 UserId = HttpContext.GetUserId(),
-                Tags = postRequest.Tags.Select(x => new PostTag { PostId = newPostId, TagName = x }).ToList()
+                Tags = postRequest.Tags.Select(x => new PostTag
+                    {
+                        PostId = newPostId,
+                        TagName = x
+                    })
+                    .ToList()
             };
             await _postService.CreatePostAsync(post);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + APIRoutes.Posts.Get.Replace("{postId}", post.Id.ToString()); 
-            return Created(baseUrl, _mapper.Map<PostsResponse>(post));
+            var locationUri = baseUrl +
+                              "/" +
+                              APIRoutes.Posts.Get.Replace("{postId}",
+                                  post.Id.ToString());
+            return Created(baseUrl,
+                _mapper.Map<PostsResponse>(post));
         }
 
         [HttpDelete(APIRoutes.Posts.Delete)]
@@ -55,11 +65,17 @@ namespace Post_Surfer.Controllers.V1
             {
                 return BadRequest();
             }
-            var userOwnsPost = await _postService.UserOwnsPostAsync(postId, HttpContext.GetUserId());
+
+            var userOwnsPost = await _postService.UserOwnsPostAsync(postId,
+                HttpContext.GetUserId());
             if (!userOwnsPost)
             {
-                return BadRequest(new { error = "You do not own the post" });
+                return BadRequest(new
+                {
+                    error = "You do not own the post"
+                });
             }
+
             var status = await _postService.DeletePostAsync(postId);
 
             if (status)
@@ -100,7 +116,6 @@ namespace Post_Surfer.Controllers.V1
         }
 
         [HttpPut(APIRoutes.Posts.Update)]
-
         public async Task<IActionResult> Update([FromBody] UpdatePostRequest postRequest)
         {
             if (postRequest.Id == Guid.Empty)
@@ -108,11 +123,16 @@ namespace Post_Surfer.Controllers.V1
                 return BadRequest();
             }
 
-            var userOwnsPost = await _postService.UserOwnsPostAsync(postRequest.Id, HttpContext.GetUserId());
+            var userOwnsPost = await _postService.UserOwnsPostAsync(postRequest.Id,
+                HttpContext.GetUserId());
             if (!userOwnsPost)
             {
-                return BadRequest(new { error = "You do not own the post" });
+                return BadRequest(new
+                {
+                    error = "You do not own the post"
+                });
             }
+
             var post = await _postService.GetPostByIdAsync(postRequest.Id);
             post.Name = postRequest.Name;
             var status = await _postService.UpdatePostAsync(post);
