@@ -5,5 +5,6 @@ namespace Post_Surfer.Contract
     {
         public Guid Id { get; set; }
         public String Name { get; set; }
+        public  DateTime Time { get; set; }
     }
 }

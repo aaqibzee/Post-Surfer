@@ -79,8 +79,8 @@ namespace Post_Surfer.Installers
 
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("v1", new Info {Version = "v1", Title = "Post Surfer"});
-                var security = new Dictionary<string, IEnumerable<String>> {{"Bearer", new string[0]}};
+                x.SwaggerDoc("v1", new Info { Version = "v1", Title = "Post Surfer" });
+                var security = new Dictionary<string, IEnumerable<String>> { { "Bearer", new string[0] } };
 
                 x.AddSecurityDefinition(name: "Bearer",
                     new ApiKeyScheme
